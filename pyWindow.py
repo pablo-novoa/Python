@@ -1,31 +1,36 @@
-#!/usr/bin/env python
-from Tkinter import *
+from PyQt4 import QtGui, QtCore
 
-def changeText(event):
-	data = entryData.get()
-	textBox.configure(text=data )
+class Window(QtGui.QMainWindow):
+    def __init__(self):
+        QtGui.QMainWindow.__init__(self)
+        self.mapper = QtCore.QSignalMapper(self)
+        self.toolbar = self.addToolBar('Foo')
+        self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonTextOnly)
+        for text in 'One Two Three'.split():
+            action = QtGui.QAction(text, self)
+            self.mapper.setMapping(action, text)
+            action.triggered.connect(self.mapper.map)
+            self.toolbar.addAction(action)
+        self.mapper.mapped['QString'].connect(self.handleButton)
+        self.edit = QtGui.QLineEdit(self)
+        self.setCentralWidget(self.edit)
 
-#root window
-root = Tk()
-root.minsize(300,300)
-root.geometry("500x300")
-#Frames
-topFrame = Frame(root)
-topFrame.pack()
+    def handleButton(self, identifier):
+        if identifier == 'One':
+            text = 'Do This'
+        elif identifier == 'Two':
+            text = 'Do That'
+        elif identifier == 'Three':
+            text = 'Do Other'
+        self.edit.setText(text)
 
-#Input field
-entryData = Entry(topFrame)
-entryData.pack(side=LEFT)
-#Button
-entryBtn = Button(topFrame, text="Add")
-entryBtn.bind("<Button-1>", changeText)
-entryBtn.pack(side=LEFT)
-#textbox
-textBox = Label(root)
-textBox.pack()
+if __name__ == '__main__':
 
-
-root.mainloop()
-
+    import sys
+    app = QtGui.QApplication(sys.argv)
+    window = Window()
+    window.resize(300, 60)
+    window.show()
+    sys.exit(app.exec_())
 
 

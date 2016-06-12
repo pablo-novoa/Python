@@ -1,35 +1,28 @@
-import sys 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+import sys
+from PyQt4 import QtCore, QtGui
 from guiElements import *
 
+def navegationEvents(GUI):
+    GUI.pushButton.clicked.connect(lambda: changeWindow(GUI, GUI.pushButton))
+    GUI.pushButton_2.clicked.connect(lambda: changeWindow(GUI, GUI.pushButton_2))
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super(MainWindow, self).__init__()
-        self.setWindowTitle("Main Window")
-        #self.showMaximized()
-        self.callWindowComponenst()
+def changeWindow(GUI, btn):
+    stackTo = int(btn.objectName())
+    GUI.stackedWidget.setCurrentIndex(stackTo)
 
-    def callWindowComponenst(self):
-        #create widget element
-        self.radio_buttons = RadioButtonWidget("Title", "Lorem impusm text", ("btn 1", "btn 2"))
-        #create layout for the widget
-        self.main_layout = QVBoxLayout()
-        #add widget to the layout
-        self.main_layout.addWidget(self.radio_buttons)
-        #add layout to window
-        self.main_widget = QWidget()
-        self.main_widget.setLayout(self.main_layout)
 
-        self.setCentralWidget(self.main_widget)        
-
-def initWindow():
-    rootApp = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    window.raise_()
-    rootApp.exec_()
+        
 
 if __name__ == "__main__":
-    initWindow()
+    
+    app = QtGui.QApplication(sys.argv)
+    MainWindow = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+
+    navegationEvents(ui)
+
+    MainWindow.show()
+    sys.exit(app.exec_())
+

@@ -1,14 +1,17 @@
 import sys
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from functools import partial
 
-from moreSignal import *
+from functions import *
 
 
 class Form(QDialog):
+
+	zeros = 0
+
 	def __init__(self, parent=None):
 		super(Form, self).__init__(parent)
-
 		self.setWindowTitle("Signal and Slot")
 		# Widgets
 		self.dial = QDial()
@@ -25,17 +28,21 @@ class Form(QDialog):
 
 		self.setLayout(layout)
 
-		#Signals
-		self.connect(self.dial, SIGNAL("valueChanged(int)"), self.spinBox.setValue)
-		self.connect(self.spinBox, SIGNAL("valueChanged(int)"), self.dial.setValue)
-		self.connect(self.spinBox, SIGNAL("atzeros(int)"), self.textBox.setValue)
+		#new syntaxt (require furder studie)
+		self.dial.valueChanged.connect(self.spinBox.setValue)
+		self.spinBox.valueChanged.connect(self.dial.setValue)
+		self.spinBox.valueChanged.connect( lambda: self.someCallback(self.spinBox.value()) )
 
+		self.show()
+		self.raise_()
 
+	def someCallback(self, valUe):
+		if valUe == 0:
+			self.zeros += 1
+			self.textBox.setValue(self.zeros)
 
 
 if __name__ == "__main__":
     rootApp = QApplication(sys.argv)
     window = Form()
-    window.show()
-    window.raise_()
     rootApp.exec_()
